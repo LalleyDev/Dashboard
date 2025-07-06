@@ -15,7 +15,11 @@ document.querySelector('#app').innerHTML = `
         </a>
       </div>
       <div class='addLink'>
-        <button id='add' type='button'>add Link</button>
+        <button id='add' type='button'>
+          <a href="">
+            <img src="${image}" alt="">
+          </a>
+        </button>
       </div>
     </div>
   </div>

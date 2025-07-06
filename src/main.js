@@ -9,26 +9,10 @@ document.querySelector('#app').innerHTML = `
     </div>
     <div class='websites'>
       <div>
-        <h1>Name</h1>
+        <h1>Test</h1>
         <a href="">
           <img src="${image}" alt="">
         </a>
-      </div>
-      <div>
-        <h1>Name</h1>
-        <a href="">link name</a>
-      </div>
-      <div>
-        <h1>Name</h1>
-        <a href="">link name</a>
-      </div>
-      <div>
-        <h1>Name</h1>
-        <a href="">link name</a>
-      </div>
-      <div>
-        <h1>Name</h1>
-        <a href="">link name</a>
       </div>
       <div class='addLink'>
         <button id='add' type='button'>add Link</button>

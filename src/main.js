@@ -1,5 +1,6 @@
 import './style.css'
 import image from './javascript.svg'
+import {addLink} from './functions.js'
 
 document.querySelector('#app').innerHTML = `
   <div class='mainWindow'>
@@ -29,11 +30,10 @@ document.querySelector('#app').innerHTML = `
         <h1>Name</h1>
         <a href="">link name</a>
       </div>
-      <div>
-        <h1>Name</h1>
-        <a href="">link name</a>
+      <div class='addLink'>
+        <button id='add' type='button'>add Link</button>
       </div>
     </div>
   </div>
 `
-
+addLink(document.querySelector('#add'))

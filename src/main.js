@@ -1,5 +1,4 @@
 import './style.css'
-import image from './javascript.svg'
 
 document.querySelector('#app').innerHTML = `
   <div class='mainWindow'>
@@ -9,9 +8,7 @@ document.querySelector('#app').innerHTML = `
     <div class='websites'>
       <div>
         <h1>Test</h1>
-        <a href="">
-          <img src="${image}" alt="">
-        </a>
+        <p>Test</p>
       </div>
       <div class='openFormbtn'>
         <button id='openFormbtn' type='button'>Add New Link</button>

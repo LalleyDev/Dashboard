@@ -1,6 +1,7 @@
 import './style.css'
 import image from './javascript.svg'
-import fs from 'node:fs';
+import jsonFile from './linkData.json'
+import appendFile from 'fs';
 
 document.querySelector('#app').innerHTML = `
   <div class='mainWindow'>
@@ -41,7 +42,6 @@ var addBtn = document.getElementById("submitBtn");
 var urlName = document.getElementById("urlName");
 var url = document.getElementById("linkName");
 
-var jsonFile = 'linkData.json';
 var links = {
   table: []
 };
@@ -62,13 +62,11 @@ window.onclick = function(event){
 }
 
 function addLink(Name,Link){
-  links.table.push({name:Name,link:Link});
-  var json = JSON.stringify(links);
-  fs.writeFile(jsonFile,json,err => {
-    if(err){
-      console.err(err);
-    }else{
-      // It worked
-    }
+  links.table.push({name:Name.value,link:Link.value});
+  var json = JSON.stringify(links,null,2);
+  console.log(json);
+  appendFile(jsonFile,json,(err)=>{
+    if (err) throw err;
+    console.log("success");
   });
 }

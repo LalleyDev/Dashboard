@@ -1,6 +1,6 @@
 import './style.css'
 import image from './javascript.svg'
-import {addLink} from './functions.js'
+import fs from 'node:fs';
 
 document.querySelector('#app').innerHTML = `
   <div class='mainWindow'>
@@ -14,14 +14,61 @@ document.querySelector('#app').innerHTML = `
           <img src="${image}" alt="">
         </a>
       </div>
-      <div class='addLink'>
-        <button id='add' type='button'>
-          <a href="">
-            <img src="${image}" alt="">
-          </a>
-        </button>
+      <div class='openFormbtn'>
+        <button id='openFormbtn' type='button'>Add New Link</button>
+      </div>
+      <div class='linkForm' id='linkForm'>
+        <div id='linkForm-content'>
+          <h1>Add the URL and the name of the website you want to add.</h1>
+          <form>
+            <label for="urlName">Name:</label>
+            <input type='text' id="urlName" name="urlName"></input><br>
+            <label for="linkName">Link:</label>
+            <input type='text' id="linkName" name="linkName"></input>
+            <button id='submitBtn' type='button'>Add</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
 `
-addLink(document.querySelector('#add'))
+
+// Form functions
+var form = document.getElementById("linkForm"); 
+var formBtn = document.getElementById("openFormbtn"); 
+var addBtn = document.getElementById("submitBtn"); 
+
+var urlName = document.getElementById("urlName");
+var url = document.getElementById("linkName");
+
+var jsonFile = 'linkData.json';
+var links = {
+  table: []
+};
+
+formBtn.onclick = function (){
+  form.style.display = "block";
+}
+
+addBtn.onclick = function (){
+  addLink(urlName, url);
+  form.style.display = "none";
+}
+
+window.onclick = function(event){
+  if (event.target == form) {
+    form.style.display = "none";
+  }
+}
+
+function addLink(Name,Link){
+  links.table.push({name:Name,link:Link});
+  var json = JSON.stringify(links);
+  fs.writeFile(jsonFile,json,err => {
+    if(err){
+      console.err(err);
+    }else{
+      // It worked
+    }
+  });
+}

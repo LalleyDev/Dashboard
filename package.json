@@ -4,11 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"npm run start-backend\" \"npm run start-frontend\"",
+    "start-backend": "npm run dev --prefix backend",
+    "start-frontend": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "concurrently": "^9.0.2",
     "vite": "^7.0.2"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
   }
 }

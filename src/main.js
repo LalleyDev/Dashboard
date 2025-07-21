@@ -60,15 +60,8 @@ function addLink(Name,Link){
   links.table.push({name:Name.value,link:Link.value});
   var json = JSON.stringify(links,null,2);
   console.log(json);
-  localStorage.setItem('links',json);
+  appendFile(jsonFile,json,(err)=>{
+    if (err) throw err;
+    console.log("success");
+  });
 }
-
-//function addLink(Name,Link){
-//  links.table.push({name:Name.value,link:Link.value});
-//  var json = JSON.stringify(links,null,2);
-//  console.log(json);
-//  appendFile(jsonFile,json,(err)=>{
-//    if (err) throw err;
-//    console.log("success");
-//  });
-//}

@@ -1,4 +1,5 @@
 import './style.css'
+import axios from 'axios';
 
 document.querySelector('#app').innerHTML = `
   <div class='mainWindow'>
@@ -29,6 +30,8 @@ document.querySelector('#app').innerHTML = `
   </div>
 `
 
+getLinks().then(renderLinks);
+
 // Form functions
 var form = document.getElementById("linkForm"); 
 var formBtn = document.getElementById("openFormbtn"); 
@@ -46,6 +49,8 @@ formBtn.onclick = function (){
 }
 
 addBtn.onclick = function (){
+  window.log("button clicked");
+  console.log('addBtn clicked');
   addLink(urlName, url);
   form.style.display = "none";
 }
@@ -56,12 +61,39 @@ window.onclick = function(event){
   }
 }
 
-function addLink(Name,Link){
-  links.table.push({name:Name.value,link:Link.value});
-  var json = JSON.stringify(links,null,2);
-  console.log(json);
-  appendFile(jsonFile,json,(err)=>{
-    if (err) throw err;
-    console.log("success");
+async function getLinks(){  
+  try {
+    const response = await axios.get('http://localhost:3001/api/urls');
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error getting links:', error);
+  }
+}
+
+function renderLinks(links){
+  const websiteDiv = document.querySelector('.websites');
+  links.forEach(link => {
+    const linkdiv = document.createElement('div');
+    linkdiv.innerHTML = `
+      <h1>${link.name}</h1>
+      <a href="${link.url}" target="_blank">${link.url}</a>
+    `;
+    websiteDiv.appendChild(linkdiv);
   });
+}
+
+async function addLink(name, url){
+  try {
+    const response = await axios.post('http://localhost:3001/api/urls',{
+      name: name.value,
+      url: url.value
+    });
+    if (response.data.success){
+      console.log('Link added successfully');
+    }else{
+      console.error('Failed to add link', response.data.error);
+    }
+  } catch (error) {
+    console.error('Error adding link:', error);
+  }
 }

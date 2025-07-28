@@ -1,7 +1,7 @@
-const express = require('express'); 
-const fs = require('fs');
-const path = require('path');
-const cors = require('cors');
+import express from "express";
+import fs from "fs";
+import path from "path";
+import cors from "cors";
 
 const app = express();
 const port = 3001;
@@ -9,7 +9,7 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
-const DATA_FILE = path.join(__dirname, 'links.json');
+const DATA_FILE = 'links.json';
 
 app.get("/api/urls", (req, res) => {
   const data = fs.readFileSync(DATA_FILE, 'utf8');

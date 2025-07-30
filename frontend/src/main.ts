@@ -7,13 +7,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <h1>My Dashboard</h1>
     </div>
     <div class='websites'>
-      <div>
-        <h1>Test</h1>
-        <p>Test</p>
-      </div>
-      <div class='openFormbtn'>
-        <button id='openFormbtn' type='button'>Add New Link</button>
-      </div>
       <div class='linkForm' id='linkForm'>
         <div id='linkForm-content'>
           <h1>Add the URL and the name of the website you want to add.</h1>
@@ -27,6 +20,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         </div>
       </div>
     </div>
+    <div class='openFormbtn'>
+      <button id='openFormbtn' type='button'>Add New Link</button>
+    </div>
   </div>
 `;
 
@@ -37,9 +33,7 @@ type link = {
   url: string;
 }
 
-var links = {
-  table: [],
-};
+const links: link[] = [];
 
 // Form functions - moved after HTML creation
 let form = document.getElementById('linkForm');
@@ -80,17 +74,37 @@ async function getLinks() {
  }
 }
 
+
+function renderLink(link: link) {
+  const websiteDiv = document.querySelector('.websites');
+  if (!websiteDiv) return;
+  const linkdiv = document.createElement('div');
+  linkdiv.innerHTML = `
+   <h1>${link.name}</h1>
+   <a href="${link.url}" target="_blank">${link.url}</a>
+  `;
+  websiteDiv.appendChild(linkdiv);
+}
+
 function renderLinks(links: link[]) {
- const websiteDiv = document.querySelector('.websites');
- if (!websiteDiv) return;
- links.forEach((link) => {
+    //const response = await axios.post('http://localhost:3001/api/urls', {
+    //  userInputLink,
+    //});
+    //if (response.data.success) {
+    //  console.log('Link added successfully');
+    //} else {
+    //  console.error('Failed to add link', response.data.error);
+    //}
+  const websiteDiv = document.querySelector('.websites');
+  if (!websiteDiv) return;
+  links.forEach((link) => {
    const linkdiv = document.createElement('div');
    linkdiv.innerHTML = `
      <h1>${link.name}</h1>
      <a href="${link.url}" target="_blank">${link.url}</a>
    `;
    websiteDiv.appendChild(linkdiv);
- });
+  });
 }
 
 async function addLink(usrName: string, usrUrl: string) {
@@ -99,14 +113,7 @@ async function addLink(usrName: string, usrUrl: string) {
       name: usrName,
       url: usrUrl,
     };
-    const response = await axios.post('http://localhost:3001/api/urls', {
-      userInputLink,
-    });
-    //if (response.data.success) {
-    //  console.log('Link added successfully');
-    //} else {
-    //  console.error('Failed to add link', response.data.error);
-    //}
+    renderLink(userInputLink);
   } catch (error) {
     console.error('Error adding link:', error);
   }

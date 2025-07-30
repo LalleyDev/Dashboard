@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "esnext",
+    "target": "esnext",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "lib": ["esnext"] ,
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleDetection": "force",
+    "moduleResolution": "Node"
+  },  
+  "include": ["./src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

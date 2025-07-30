@@ -5,12 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "frontend": "cd frontend; vite",
-    "backend": "cd backend; nodemon index.ts",
-    "build": "vite build",
-    "preview": "vite preview"
+    "frontend": "cd frontend/dist; vite",
+    "backend": "cd backend/dist; nodemon index.js",
+    "build": "concurrently \"npm run buildBackend\" \"npm run buildFrontend\"",
+    "buildFrontend": "cd frontend; vite build && tsc",
+    "buildBackend": "cd backend; tsc",
+    "preview": "cd frontend/dist; vite preview"
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.1.0",
     "concurrently": "^9.0.2",
@@ -19,7 +23,7 @@
     "vite": "^7.0.2"
   },
   "dependencies": {
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "nodemon": "^3.1.10",

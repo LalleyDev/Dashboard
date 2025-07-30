@@ -1,7 +1,7 @@
-import './style.css'
+import "./style.css";
 import axios from 'axios';
 
-document.querySelector('#app').innerHTML = `
+document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div class='mainWindow'>
     <div class'header'>
       <h1>My Dashboard</h1>
@@ -28,71 +28,85 @@ document.querySelector('#app').innerHTML = `
       </div>
     </div>
   </div>
-`
+`;
 
-getLinks().then(renderLinks);
+//getLinks().then(renderLinks);
 
-// Form functions
-var form = document.getElementById("linkForm"); 
-var formBtn = document.getElementById("openFormbtn"); 
-var addBtn = document.getElementById("submitBtn"); 
-
-var urlName = document.getElementById("urlName");
-var url = document.getElementById("linkName");
+type link = {
+  name: string;
+  url: string;
+}
 
 var links = {
-  table: []
+  table: [],
 };
 
-formBtn.onclick = function (){
-  form.style.display = "block";
+// Form functions - moved after HTML creation
+let form = document.getElementById('linkForm');
+let formBtn = document.getElementById('openFormbtn');
+let addBtn = document.getElementById('submitBtn');
+
+let urlName = document.getElementById('urlName') as HTMLInputElement;
+let url = document.getElementById('linkName') as HTMLInputElement;
+
+if (formBtn && form) {
+  formBtn.onclick = function () {
+    console.log("Open form button clicked");
+    form.style.display = 'block';
+  };
 }
 
-addBtn.onclick = function (){
-  window.log("button clicked");
-  console.log('addBtn clicked');
-  addLink(urlName, url);
-  form.style.display = "none";
+if (addBtn && form && urlName && url) {
+  addBtn.onclick = function () {
+    console.log('addBtn clicked');
+    addLink(urlName.value, url.value);
+    form.style.display = 'none';
+  };
 }
 
-window.onclick = function(event){
+window.onclick = function (event) {
   if (event.target == form) {
-    form.style.display = "none";
+    form!.style.display = 'none';
   }
+};
+
+async function getLinks() {
+ try {
+   const response = await axios.get('http://localhost:3001/api/urls');
+   console.log(response.data);
+   return response.data as link[];
+ } catch (error) {
+   console.error('Error getting links:', error);
+ }
 }
 
-async function getLinks(){  
+function renderLinks(links: link[]) {
+ const websiteDiv = document.querySelector('.websites');
+ if (!websiteDiv) return;
+ links.forEach((link) => {
+   const linkdiv = document.createElement('div');
+   linkdiv.innerHTML = `
+     <h1>${link.name}</h1>
+     <a href="${link.url}" target="_blank">${link.url}</a>
+   `;
+   websiteDiv.appendChild(linkdiv);
+ });
+}
+
+async function addLink(usrName: string, usrUrl: string) {
   try {
-    const response = await axios.get('http://localhost:3001/api/urls');
-    console.log(response.data);
-  } catch (error) {
-    console.error('Error getting links:', error);
-  }
-}
-
-function renderLinks(links){
-  const websiteDiv = document.querySelector('.websites');
-  links.forEach(link => {
-    const linkdiv = document.createElement('div');
-    linkdiv.innerHTML = `
-      <h1>${link.name}</h1>
-      <a href="${link.url}" target="_blank">${link.url}</a>
-    `;
-    websiteDiv.appendChild(linkdiv);
-  });
-}
-
-async function addLink(name, url){
-  try {
-    const response = await axios.post('http://localhost:3001/api/urls',{
-      name: name.value,
-      url: url.value
+    let userInputLink: link = {
+      name: usrName,
+      url: usrUrl,
+    };
+    const response = await axios.post('http://localhost:3001/api/urls', {
+      userInputLink,
     });
-    if (response.data.success){
-      console.log('Link added successfully');
-    }else{
-      console.error('Failed to add link', response.data.error);
-    }
+    //if (response.data.success) {
+    //  console.log('Link added successfully');
+    //} else {
+    //  console.error('Failed to add link', response.data.error);
+    //}
   } catch (error) {
     console.error('Error adding link:', error);
   }

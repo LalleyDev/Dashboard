@@ -35,7 +35,6 @@ type link = {
 
 const links: link[] = [];
 
-// Form functions - moved after HTML creation
 let form = document.getElementById('linkForm');
 let formBtn = document.getElementById('openFormbtn');
 let addBtn = document.getElementById('submitBtn');
@@ -64,17 +63,27 @@ window.onclick = function (event) {
   }
 };
 
-async function getLinks() {
- try {
-   const response = await axios.get('http://localhost:3001/api/urls');
-   console.log(response.data);
-   return response.data as link[];
- } catch (error) {
-   console.error('Error getting links:', error);
- }
+/**
+ * This function takes a user input link and adds it to the html 
+ * and also to the back end .json file for storage.
+ */
+async function addLink(usrName: string, usrUrl: string) {
+  try {
+    let userInputLink: link = {
+      name: usrName,
+      url: usrUrl,
+    };
+    renderLink(userInputLink);
+    addToBackend(userInputLink);
+  } catch (error) {
+    console.error('Error adding link:', error);
+  }
 }
 
-
+/**
+  * This function should take whatever link given to it and 
+  * properly add it to the dom.
+  */
 function renderLink(link: link) {
   const websiteDiv = document.querySelector('.websites');
   if (!websiteDiv) return;
@@ -86,35 +95,29 @@ function renderLink(link: link) {
   websiteDiv.appendChild(linkdiv);
 }
 
-function renderLinks(links: link[]) {
-    //const response = await axios.post('http://localhost:3001/api/urls', {
-    //  userInputLink,
-    //});
-    //if (response.data.success) {
-    //  console.log('Link added successfully');
-    //} else {
-    //  console.error('Failed to add link', response.data.error);
-    //}
-  const websiteDiv = document.querySelector('.websites');
-  if (!websiteDiv) return;
-  links.forEach((link) => {
-   const linkdiv = document.createElement('div');
-   linkdiv.innerHTML = `
-     <h1>${link.name}</h1>
-     <a href="${link.url}" target="_blank">${link.url}</a>
-   `;
-   websiteDiv.appendChild(linkdiv);
+async function addToBackend(link: link) {
+  const js = await fetch('http://localhost:3001/api/urls',{
+    method:"POST",
+    mode:"cors",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify(link)
   });
+  return js.json();
 }
 
-async function addLink(usrName: string, usrUrl: string) {
-  try {
-    let userInputLink: link = {
-      name: usrName,
-      url: usrUrl,
-    };
-    renderLink(userInputLink);
-  } catch (error) {
-    console.error('Error adding link:', error);
+async function getFromBackend(){
+  const js = await fetch('http://localhost:3001/api/urls',{
+    method:"GET",
+    mode:"cors",
+  });
+  // TODO: fill links with proper data type
+  return js.json();
+};
+
+function renderLinks(links: link[]) {
+  for(let link of links){
+    addLink(link.name, link.url);
   }
 }

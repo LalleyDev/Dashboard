@@ -31,4 +31,4 @@ npm run dev
 Once finished the plan is to make this into a docker image so it can be easily deployed in tandum with the other self hosted projects on my server.
 
 ## Contributing
-Any recomendations are more then welcome as I am trying to learn.
+Any recommendations are more than welcome as I am trying to learn.

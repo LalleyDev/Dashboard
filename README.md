@@ -2,7 +2,7 @@
 ## Description
 This is a self hosted dashboard application. 
 
-This project will develop much more as I finish boot.dev's Typescript servers lessons.
+This project will develop much more as I finish boot.dev's Typescript server lessons.
 ## Why?
 There are so many of these out there why create another? Well I am trying to better my skills in html, css, http servers and typescript. This seemed like the most practical option for creating a decoupled application that would be useful in my day to day. 
 

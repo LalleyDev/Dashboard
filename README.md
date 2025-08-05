@@ -1,16 +1,15 @@
 # Dashboard
 ## Description
-This is a self hosted dashboard application. 
+This is a self hosted in progress dashboard application that will be expanded as my knowledge of Typescript and HTTP server handling grows. 
 
-This project will develop much more as I finish boot.dev's Typescript server lessons.
 ## Why?
-There are so many of these out there why create another? Well I am trying to better my skills in html, css, http servers and typescript. This seemed like the most practical option for creating a decoupled application that would be useful in my day to day. 
+There are so many of these out there why create another? Well I am trying to better my skills in HTML, CSS, HTTP servers and Typescript. This seemed like the most practical option for creating a decoupled application that would be useful in my day to day. 
 
 ## Current State
-This application currently has the front end typescript mostly completed
+This application currently has the front end Typescript mostly completed.
 
 Upcoming:
-1. Write the backend http handling.
+1. Write the backend HTTP handling.
 2. Write the backend data handling.
 3. Make the front end GUI nice.
 

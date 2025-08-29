@@ -9,7 +9,8 @@
     "backend": "cd backend/dist; nodemon index.js",
     "build": "concurrently \"npm run buildBackend\" \"npm run buildFrontend\"",
     "buildFrontend": "cd frontend; vite build && tsc",
-    "buildBackend": "cd backend; tsc",
+    "buildBackend": "cd backend; tsc && npm run postBuildBackend",
+    "postBuildBackend": "cd backend; copyfiles -u 1 src/links.json dist",
     "preview": "cd frontend/dist; vite preview"
   },
   "devDependencies": {

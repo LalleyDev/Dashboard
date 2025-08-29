@@ -1,4 +1,5 @@
 import "./style.css";
+import { type link, type storedlinks } from './types';
 import axios from 'axios';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -28,11 +29,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
 //getLinks().then(renderLinks);
 
-type link = {
-  name: string;
-  url: string;
-}
-
 const links: link[] = [];
 
 let form = document.getElementById('linkForm');
@@ -42,6 +38,7 @@ let addBtn = document.getElementById('submitBtn');
 let urlName = document.getElementById('urlName') as HTMLInputElement;
 let url = document.getElementById('linkName') as HTMLInputElement;
 
+// HTML Element Event Listeners
 if (formBtn && form) {
   formBtn.onclick = function () {
     console.log("Open form button clicked");
@@ -63,9 +60,11 @@ window.onclick = function (event) {
   }
 };
 
+// HTTP Requests and DOM Manipulation
+
 /**
  * This function takes a user input link and adds it to the html 
- * and also to the back end .json file for storage.
+ * and also to the backend .json file for storage.
  */
 async function addLink(usrName: string, usrUrl: string) {
   try {
@@ -83,6 +82,8 @@ async function addLink(usrName: string, usrUrl: string) {
 /**
   * This function should take whatever link given to it and 
   * properly add it to the dom.
+  * TODO: look pretty
+  * 
   */
 function renderLink(link: link) {
   const websiteDiv = document.querySelector('.websites');

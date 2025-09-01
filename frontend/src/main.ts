@@ -1,6 +1,6 @@
 import "./style.css";
-import { type link, type storedlinks } from './types';
-import axios from 'axios';
+import { type link} from './types';
+//import axios from 'axios';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div class='mainWindow'>
@@ -27,9 +27,9 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </div>
 `;
 
-//getLinks().then(renderLinks);
+// On startup, get links from backend
+document.addEventListener('DOMContentLoaded', getFromBackend);
 
-const links: link[] = [];
 
 let form = document.getElementById('linkForm');
 let formBtn = document.getElementById('openFormbtn');
@@ -59,6 +59,11 @@ window.onclick = function (event) {
     form!.style.display = 'none';
   }
 };
+
+// Before unload event to save links to backend
+// This might be implemented in the future
+//window.onbeforeunload = syncBackend;
+
 
 // HTTP Requests and DOM Manipulation
 
@@ -96,8 +101,15 @@ function renderLink(link: link) {
   websiteDiv.appendChild(linkdiv);
 }
 
+// async function syncBackend() {
+//   await fetch('http://localhost:3001/api/sync',{
+//     method:"GET",
+//     mode:"cors",
+//   });
+// }
+
 async function addToBackend(link: link) {
-  const js = await fetch('http://localhost:3001/api/urls',{
+  const js = await fetch('http://localhost:3001/api/putUrls',{
     method:"POST",
     mode:"cors",
     headers:{
@@ -109,16 +121,36 @@ async function addToBackend(link: link) {
 }
 
 async function getFromBackend(){
-  const js = await fetch('http://localhost:3001/api/urls',{
-    method:"GET",
-    mode:"cors",
-  });
-  // TODO: fill links with proper data type
-  return js.json();
+  const url = 'http://localhost:3001/api/getUrls';
+  console.log("Fetching from backend:", url);
+  try{
+    const response = await fetch(url,{
+      method:"POST",
+      mode:"cors",
+      body: JSON.stringify({}),
+      headers:{
+        "Content-Type":"application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }else{
+      console.log("Response OK");
+    }
+    renderLinks((await response.json()).links);
+
+  } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error(error);
+      }
+  }
 };
 
 function renderLinks(links: link[]) {
   for(let link of links){
-    addLink(link.name, link.url);
+    renderLink(link);
   }
 }

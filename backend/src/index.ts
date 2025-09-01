@@ -12,47 +12,15 @@ app.use(express.json());
 
 const DATA_FILE = 'links.json';
 
-export const createLink = (
-  req: Request, 
-  res: Response, 
-  next: NextFunction
-) => {
-  try {
-    const links = req.body as link; 
-    if(!links.name || ! links.url){
-      return res.status(400).json({error: 'Name and URL are required'}); 
-    }
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    const json = JSON.parse(data);
-    if(!json.links){
-      json.links = [];
-    }
-    json.links.push(links);
-    fs.writeFileSync(DATA_FILE, JSON.stringify(json, null, 2));
-    res.status(201).json({message: 'Link added successfully'});
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const updateLink = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {};
-
-export const deleteLink = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {};
-
-app.get("/api/urls", (req : express.Request, res : express.Response) => {
-  const data = fs.readFileSync(DATA_FILE, 'utf8');
-  res.json(JSON.parse(data));
+app.post("/api/getUrls", (req : express.Request, res : express.Response) => {
+  res.sendFile(DATA_FILE, { root: path.resolve('.') });
+  console.log("Sent file:", DATA_FILE);
 });
 
-app.post("/api/urls", (req : express.Request, res : express.Response) => {
+/**
+ * Endpoint to get all stored links
+ */
+app.post("/api/putUrls", (req : express.Request, res : express.Response) => {
   const {name, url} = req.body as link;
 
   if (!name || !url) {
@@ -62,9 +30,38 @@ app.post("/api/urls", (req : express.Request, res : express.Response) => {
   if (!data.links) {
     data.links = [];
   }
-  data.links.push({name, url});
+  const duplicate = data.links.some((link: link) => link.name === name || link.url === url);
+  if (duplicate) {
+    return res.status(409).json({ error: 'Link with the same name or URL already exists' });
+  }else{
+    data.links.push({name, url});
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+    res.status(201).json({message: 'Link added successfully'});
+    console.log("Added link:", {name, url});
+  }
+});
+
+app.post("/api/updateLinks", (req : express.Request, res : express.Response) => {
+  const {links} = req.body as storedlinks;
+
+  if (!links || !Array.isArray(links)) {
+    return res.status(400).json({error: 'Links array is required'});
+  }
+  const data = { links };
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-  res.status(201).json({message: 'Link added successfully'});
+  res.status(200).json({message: 'Links updated successfully'});
+  console.log("Updated links:", links);
+});
+
+app.post("/api/sync", (req : express.Request, res : express.Response) => {
+  const data = fs.readFileSync(DATA_FILE, 'utf8');
+  const json = JSON.parse(data);
+  const storedData = fs.readFileSync("../src/links.json", 'utf8');
+  const storedJson = JSON.parse(storedData);
+  fs.writeFileSync("../src/links.json", JSON.stringify(json, null, 2));
+  fs.writeFileSync(DATA_FILE, JSON.stringify(storedJson, null, 2));
+  console.log("Synchronized data between backend and frontend.");
+  res.json("Sync successful");
 });
 
 app.listen(port, () => {

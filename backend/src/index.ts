@@ -53,16 +53,16 @@ app.post("/api/updateLinks", (req : express.Request, res : express.Response) => 
   console.log("Updated links:", links);
 });
 
-app.post("/api/sync", (req : express.Request, res : express.Response) => {
-  const data = fs.readFileSync(DATA_FILE, 'utf8');
-  const json = JSON.parse(data);
-  const storedData = fs.readFileSync("../src/links.json", 'utf8');
-  const storedJson = JSON.parse(storedData);
-  fs.writeFileSync("../src/links.json", JSON.stringify(json, null, 2));
-  fs.writeFileSync(DATA_FILE, JSON.stringify(storedJson, null, 2));
-  console.log("Synchronized data between backend and frontend.");
-  res.json("Sync successful");
-});
+// app.post("/api/sync", (req : express.Request, res : express.Response) => {
+//   const data = fs.readFileSync(DATA_FILE, 'utf8');
+//   const json = JSON.parse(data);
+//   const storedData = fs.readFileSync("../src/links.json", 'utf8');
+//   const storedJson = JSON.parse(storedData);
+//   fs.writeFileSync("../src/links.json", JSON.stringify(json, null, 2));
+//   fs.writeFileSync(DATA_FILE, JSON.stringify(storedJson, null, 2));
+//   console.log("Synchronized data between backend and frontend.");
+//   res.json("Sync successful");
+// });
 
 app.listen(port, () => {
   console.log(`Backend is running on http://localhost:${port}`)

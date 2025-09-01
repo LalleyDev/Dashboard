@@ -30,7 +30,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 // On startup, get links from backend
 document.addEventListener('DOMContentLoaded', getFromBackend);
 
-
 let form = document.getElementById('linkForm');
 let formBtn = document.getElementById('openFormbtn');
 let addBtn = document.getElementById('submitBtn');
@@ -95,11 +94,13 @@ function renderLink(link: link) {
   if (!websiteDiv) return;
   const linkdiv = document.createElement('div');
   linkdiv.innerHTML = `
-   <h1>${link.name}</h1>
-   <a href="${link.url}" target="_blank">${link.url}</a>
+    <form action="${link.url.startsWith('http') ? link.url : 'http://' + link.url}" target="_blank">
+      <button type="submit">${link.name}</button>
+    </form>
   `;
   websiteDiv.appendChild(linkdiv);
 }
+   //<a href="${link.url}" target="_blank">${link.name}</a>
 
 // async function syncBackend() {
 //   await fetch('http://localhost:3001/api/sync',{

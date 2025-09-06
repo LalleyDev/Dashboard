@@ -12,6 +12,11 @@ app.use(express.json());
 
 const DATA_FILE = 'links.json';
 
+/**
+ * Endpoint to get all stored links.
+ * This is done everytime the frontend is loaded. 
+ * There might be a better way to do this but this is simple for a first version.
+ */
 app.post("/api/getUrls", (req : express.Request, res : express.Response) => {
   res.sendFile(DATA_FILE, { root: path.resolve('.') });
   console.log("Sent file:", DATA_FILE);
@@ -23,7 +28,7 @@ app.post("/api/getUrls", (req : express.Request, res : express.Response) => {
 app.post("/api/putUrls", (req : express.Request, res : express.Response) => {
   const {name, url} = req.body as link;
 
-  //Do better verification and validation here
+  // Future improvement: Learn how to do more validation and verification.
   if (!name || !url) {
     return res.status(400).json({error: 'Name and URL are required'});
   }
@@ -37,10 +42,13 @@ app.post("/api/putUrls", (req : express.Request, res : express.Response) => {
   }
   data.links.push({name, url});
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-  res.status(201).json({message: 'Link added successfully'});
+  res.status(201).json({message: 'Link created successfully'});
   console.log("Added link:", {name, url});
 });
 
+/**
+ * Endpoint to remove a link by name
+ */
 app.delete("/api/removeLink", (req : express.Request, res : express.Response) => {
   const {name} = req.body as link;
   if (!name) {
@@ -54,7 +62,7 @@ app.delete("/api/removeLink", (req : express.Request, res : express.Response) =>
   if (index === -1) {
     return res.status(404).json({ error: 'Link not found' });
   }
-  // This is removeing the specific name object from the json file
+  // This is removing the specific name object from the json file
   data.links.splice(index, 1);
   // This is rewriting the json file with the new data
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
@@ -62,6 +70,9 @@ app.delete("/api/removeLink", (req : express.Request, res : express.Response) =>
   console.log("Removed link:", {name});
 });
 
+/**
+ * Notify that the backend is running.
+ */
 app.listen(port, () => {
   console.log(`Backend is running on http://localhost:${port}`)
 })

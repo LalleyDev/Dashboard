@@ -93,19 +93,6 @@ button:focus-visible {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.linkForm-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  width: 80%;
-  box-shadow:
-    0 4px 8px 0 rgba(0, 0, 0, 0.2),
-    0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  animation-name: animatetop;
-  animation-duration: 0.4s;
-}
-
 .linkFormElement{
   display: grid;
   align-items: center; 
@@ -129,19 +116,6 @@ button:focus-visible {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.removeForm-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 0;
-  border: 1px solid #888;
-  width: 80%;
-  box-shadow:
-    0 4px 8px 0 rgba(0, 0, 0, 0.2),
-    0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  animation-name: animatetop;
-  animation-duration: 0.4s;
-}
-
 .removeFormElement{
   display: grid;
   align-items: center; 
@@ -150,7 +124,6 @@ button:focus-visible {
   grid-template-columns: auto auto auto;
   column-gap: 5px;
 }
-
 
 .label {
   grid-column: 1;
@@ -161,41 +134,4 @@ button:focus-visible {
   grid-column: 3;
   grid-row: 1 / span 3;
   align-self: center; 
-}
-
-@keyframes animatetop {
-  from {
-    top: -300px;
-    opacity: 0;
-  }
-  to {
-    top: 0;
-    opacity: 1;
-  }
-}
-
-.submit {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-.submit:hover,
-.submit:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
 }

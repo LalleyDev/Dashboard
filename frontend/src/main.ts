@@ -132,13 +132,14 @@ function renderLink(link: link) {
   const websiteDiv = document.querySelector('.websites');
   if (!websiteDiv) return;
   const linkdiv = document.createElement('div');
+  linkdiv.id = link.name;
   // process the link.url
   //grab the base domain for the image.
   // TODO: get favicon.
   // <image src="${link.url}/favicon.ico" alt="Favicon">
   linkdiv.innerHTML = `
     <form action="${link.url.startsWith('http') ? link.url : 'http://' + link.url}" target="_blank">
-      <button class="urlButton" id="${link.name}"type="submit">${link.name}</button>
+      <button class="urlButton" type="submit">${link.name}</button>
     </form>
   `;
   websiteDiv.appendChild(linkdiv);
@@ -156,9 +157,10 @@ function saveToDeleteForm(link: link) {
   const removeFormElmnt = document.querySelector('.removeFormElement');
   if (!removeFormElmnt) return;
   const rmvDiv = document.createElement('div');
+  rmvDiv.id = link.name + "-removeDiv";
   rmvDiv.innerHTML = `
-    <span id="${link.name}-deletespan"/>${link.name}</span>
-    <button class="${link.name}-deletebtn" id="${link.name}-deletebtn" type="button">Delete</button>
+    <span class="dltspan">${link.name}</span>
+    <button class="deletebtn" id="${link.name}-deletebtn" type="button">Delete</button>
   `;
   removeFormElmnt.appendChild(rmvDiv);
   const rmvBtn = document.getElementById(`${link.name}-deletebtn`);
@@ -180,8 +182,7 @@ function saveToDeleteForm(link: link) {
 async function removeLink(link: link) {
   // Grab the related element in the .websites and the coresponding delete button and span.
   const element = document.getElementById(link.name);
-  const elementDeleteBtn = document.getElementById(link.name + "-deletebtn");
-  const elementDeleteSpan = document.getElementById(link.name + "-deletespan");
+  const elementDeleteForm = document.getElementById(link.name + "-removeDiv");
 
   fetch('http://localhost:3001/api/removeLink', {
     method: "DELETE",
@@ -207,11 +208,10 @@ async function removeLink(link: link) {
     })
     .then(response => {
       console.log(`Response status: ${response.status}`);
-      if (element && elementDeleteBtn && elementDeleteSpan) {
+      if (element && elementDeleteForm) {
         console.log("Removing element:", link.name);
         element.remove();
-        elementDeleteBtn.remove();
-        elementDeleteSpan.remove();
+        elementDeleteForm.remove();
       }
     })
     .catch(error => {

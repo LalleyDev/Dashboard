@@ -138,6 +138,25 @@ button:focus-visible {
   column-gap: 5px;
 }
 
+.deletebtn {
+  color: red;
+  border: 2px solid red;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  padding: 5px;
+  margin: 5px;
+}
+.deletebtn:hover {
+  border-color: darkred;
+}
+
+.dltspan {
+  color: white;
+  padding: 5px;
+  margin: 5px;
+}
+
 .label {
   grid-column: 1;
   text-align: right;

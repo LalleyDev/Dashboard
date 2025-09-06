@@ -1,5 +1,5 @@
 import { Request, Response} from 'express';
-import { type link, type storedlinks } from './types';
+import { type link} from './types';
 import fs from 'fs';
 import path from 'path';
 import cors from 'cors';

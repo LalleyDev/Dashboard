@@ -1,6 +1,5 @@
 import "./style.css";
 import { type link } from './types';
-//import axios from 'axios';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div class='mainWindow'>

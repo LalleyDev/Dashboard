@@ -15,7 +15,8 @@
 
 .mainWindow {
   display: grid;
-  grid-template-rows: auto auto;
+  grid-template-rows: 75px auto 60px;
+  align-items: center;
 }
 
 .websites {
@@ -23,6 +24,14 @@
   grid-template-rows: auto auto auto;
   column-gap: 5px;
   grid-template-columns: auto auto auto auto auto auto;
+}
+
+.openFormbtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 10px;
 }
 
 body {
@@ -35,7 +44,6 @@ body {
 
 h1 {
   font-size: 3.2em;
-  line-height: 1.1;
 }
 
 #app {
@@ -69,8 +77,13 @@ button:focus-visible {
 }
 
 .urlButton{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   width: 150px;
-  text-align: center;
   padding: 50px;
   margin: 5px;
 }

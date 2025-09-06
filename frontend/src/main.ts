@@ -108,9 +108,9 @@ function renderLink(link: link) {
   // process the link.url
   //grab the base domain for the image.
   // TODO: get favicon.
+  // <image src="${link.url}/favicon.ico" alt="Favicon">
   linkdiv.innerHTML = `
     <form action="${link.url.startsWith('http') ? link.url : 'http://' + link.url}" target="_blank">
-      <image src="${link.url}/favicon.ico" alt="Favicon">
       <button class="urlButton" id="${link.name}"type="submit">${link.name}</button>
     </form>
   `;
@@ -214,7 +214,7 @@ async function removeFromBackend(link: link) {
     },
     body: JSON.stringify({name: link.name})
   });
-  handleResponse(await response);
+  handleResponse(response);
 };
 
 /**

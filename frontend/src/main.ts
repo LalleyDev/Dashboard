@@ -83,18 +83,39 @@ window.onclick = function (event) {
  * and backend .json file for storage.
  */
 async function addLink(usrName: string, usrUrl: string) {
-  try {
     let userInputLink: link = {
       name: usrName,
       url: usrUrl,
     };
-    // Adds to DOM
+    try{
+      const response = await fetch('http://localhost:3001/api/putUrls',{
+        method:"POST",
+        mode:"cors",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify(userInputLink)
+      });
+      if(response.status == 409){
+        alert("Link with the same name or URL already exists");
+        return;
+      }
+      if(response.status == 400){
+        alert("Both fields are required.");
+        return;
+      }
+      if(response.status != 201){
+        alert("There was an error adding the link. Please try again.");
+        return;
+      }
+      handleResponse(response);
+    }catch(error){
+      alert("There was an error connecting to the backend. Please make sure it is running.");
+      return;
+    }
+    // Adds to DOM and delete form.
     renderLink(userInputLink);
-    // Adds to backend
-    addToBackend(userInputLink);
-  } catch (error) {
-    console.error('Error adding link:', error);
-  }
+    saveToDeleteForm(userInputLink);
 }
 
 /**
@@ -115,7 +136,6 @@ function renderLink(link: link) {
     </form>
   `;
   websiteDiv.appendChild(linkdiv);
-  saveToDeleteForm(link);
 }
 
 /**
@@ -166,22 +186,6 @@ async function removeLink(link: link) {
   // Remove from backend
   await removeFromBackend(link);
 }
-
-/**
- * Adds a link to the backend .json file for storage.
- * @param link - link to be added to backend.
- */
-async function addToBackend(link: link) {
-  const response = await fetch('http://localhost:3001/api/putUrls',{
-    method:"POST",
-    mode:"cors",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body: JSON.stringify(link)
-  });
-  handleResponse(response);
-};
 
 /**
  * Fetches all links from the backend .json file and renders them to the DOM.

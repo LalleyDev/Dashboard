@@ -1,5 +1,5 @@
 import "./style.css";
-import { type link} from './types';
+import { type link } from './types';
 //import axios from 'axios';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -58,7 +58,7 @@ if (rmvBtn && removeForm) {
 // Add user input links upon click.
 if (addBtn && form && urlName && url) {
   addBtn.onclick = function () {
-    if(urlName.value == "" || url.value == ""){
+    if (urlName.value == "" || url.value == "") {
       alert("Both fields are required.");
       return;
     }
@@ -83,39 +83,45 @@ window.onclick = function (event) {
  * and backend .json file for storage.
  */
 async function addLink(usrName: string, usrUrl: string) {
-    let userInputLink: link = {
-      name: usrName,
-      url: usrUrl,
-    };
-    try{
-      const response = await fetch('http://localhost:3001/api/putUrls',{
-        method:"POST",
-        mode:"cors",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body: JSON.stringify(userInputLink)
-      });
-      if(response.status == 409){
-        alert("Link with the same name or URL already exists");
-        return;
+  let userInputLink: link = {
+    name: usrName,
+    url: usrUrl,
+  };
+  fetch('http://localhost:3001/api/putUrls', {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(userInputLink)
+  })
+    .then(response => {
+      // Check if the response is not successful
+      if (!response.ok) {
+        if (response.status === 409) {
+          throw new Error("A link with the same name or URL already exists.");
+        }
+        if (response.status === 400) {
+          throw new Error(response.statusText);
+        }
+        console.error("Error response:", response);
+        throw new Error("There was an error adding the link. Please try again.");
       }
-      if(response.status == 400){
-        alert("Both fields are required.");
-        return;
+      return response;
+    })
+    .then(response => {
+      console.log(`Response status: ${response.status}`);
+      // Adds to DOM and delete form.
+      renderLink(userInputLink);
+      saveToDeleteForm(userInputLink);
+    })
+    .catch(error => {
+      if (error.message) {
+        alert(error.message);
+      } else {
+        alert("There was an error connecting to the backend. Please make sure it is running.");
       }
-      if(response.status != 201){
-        alert("There was an error adding the link. Please try again.");
-        return;
-      }
-      handleResponse(response);
-    }catch(error){
-      alert("There was an error connecting to the backend. Please make sure it is running.");
-      return;
-    }
-    // Adds to DOM and delete form.
-    renderLink(userInputLink);
-    saveToDeleteForm(userInputLink);
+    });
 }
 
 /**
@@ -177,20 +183,50 @@ async function removeLink(link: link) {
   const elementDeleteBtn = document.getElementById(link.name + "-deletebtn");
   const elementDeleteSpan = document.getElementById(link.name + "-deletespan");
 
-  if (element && elementDeleteBtn && elementDeleteSpan) {
-    console.log("Removing element:", link.name);
-    element.remove();
-    elementDeleteBtn.remove();
-    elementDeleteSpan.remove();
-  }
-  // Remove from backend
-  await removeFromBackend(link);
+  fetch('http://localhost:3001/api/removeLink', {
+    method: "DELETE",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: link.name })
+  })
+    .then(response => {
+      if (!response.ok) {
+        if (response.status == 400) {
+          alert("Name is required to remove a link.");
+
+        } 
+        if (response.status == 404) {
+          alert("Link not found. It may have already been removed.");
+        }
+        console.error("Error response:", response);
+        throw new Error("There was an error removing the link. Please try again.");
+      }
+      return response;
+    })
+    .then(response => {
+      console.log(`Response status: ${response.status}`);
+      if (element && elementDeleteBtn && elementDeleteSpan) {
+        console.log("Removing element:", link.name);
+        element.remove();
+        elementDeleteBtn.remove();
+        elementDeleteSpan.remove();
+      }
+    })
+    .catch(error => {
+      if (error.message) {
+        alert(error.message);
+      } else {
+        alert("There was an error connecting to the backend. Please make sure it is running.");
+      }
+    });
 }
 
 /**
  * Fetches all links from the backend .json file and renders them to the DOM.
  */
-async function getFromBackend(){
+async function getFromBackend() {
   const url = 'http://localhost:3001/api/getUrls';
   console.log("Fetching from backend:", url);
   const response = await fetch(url,{
@@ -201,24 +237,11 @@ async function getFromBackend(){
       "Content-Type":"application/json"
     }
   });
-  handleResponse(response);
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+  }
+  // Renders all links to DOM.
   renderLinks((await response.json()).links);
-};
-
-/**
- * Removes a link from the backend .json file.
- * @param link - link to be removed from backend.
- */
-async function removeFromBackend(link: link) {
-  const response = await fetch('http://localhost:3001/api/removeLink',{
-    method:"DELETE",
-    mode:"cors",
-    headers:{
-      "Content-Type":"application/json",
-    },
-    body: JSON.stringify({name: link.name})
-  });
-  handleResponse(response);
 };
 
 /**
@@ -226,20 +249,7 @@ async function removeFromBackend(link: link) {
  * @param links - array of links to be rendered to DOM.
  */
 function renderLinks(links: link[]) {
-  for(let link of links){
+  for (let link of links) {
     renderLink(link);
-  }
-}
-
-/**
- * @param response - response from fetch request.
- * @throws Error if response is not ok.
- * @logs response status.
- */
-function handleResponse(response: Response) {
-  if (!response.ok) {
-    throw new Error(`Response status: ${response.status}`);
-  } else {
-    console.log(`Response status: ${response.status}`);
   }
 }

@@ -12,10 +12,10 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
         <div id='linkForm-content'>
           <h2>Add the name and URL of the website you want to add.</h2>
           <form class='linkFormElement'>
-            <label class='label' for="urlName">Name:</label>
-            <input class='input' type='text' id="urlName" name="urlName"></input><br>
-            <label class='label' for="linkName">Link:</label>
-            <input class='input' id="linkName" name="linkName"></input>
+            <label class='label' for="name">Name:</label>
+            <input class='input' type='text' id="name"></input><br>
+            <label class='label' for="url">Link:</label>
+            <input class='input' id="url" type='url'></input>
             <button class='btn' id='submitBtn' type='button'>Add</button>
           </form>
         </div>
@@ -44,8 +44,8 @@ let formBtn = document.getElementById('openFormbtn');
 let rmvBtn = document.getElementById('rmvButton');
 let addBtn = document.getElementById('submitBtn');
 
-let urlName = document.getElementById('urlName') as HTMLInputElement;
-let url = document.getElementById('linkName') as HTMLInputElement;
+let urlName = document.getElementById('name') as HTMLInputElement;
+let url = document.getElementById('url') as HTMLInputElement;
 
 // HTML Element Event Listeners
 if (formBtn && form) {
@@ -53,6 +53,10 @@ if (formBtn && form) {
     form.style.display = 'block';
   };
 }
+
+formBtn!.onclick = function () {
+  form!.style.display = 'block';
+};
 
 if (rmvBtn && removeForm) {
   rmvBtn.onclick = function () {
@@ -67,6 +71,7 @@ if (addBtn && form && urlName && url) {
       return;
     }
     //Add error check for url format
+    // 
     addLink(urlName.value, url.value);
     urlName.value = '';
     url.value = '';
@@ -114,8 +119,11 @@ function renderLink(link: link) {
   const websiteDiv = document.querySelector('.websites');
   if (!websiteDiv) return;
   const linkdiv = document.createElement('div');
+  // process the link.url
+  //grab the base domain for the image.
   linkdiv.innerHTML = `
     <form action="${link.url.startsWith('http') ? link.url : 'http://' + link.url}" target="_blank">
+      <image src="${link.url}/favicon.ico" alt="Favicon">
       <button class="urlButton" id="${link.name}"type="submit">${link.name}</button>
     </form>
   `;
@@ -197,12 +205,12 @@ async function getFromBackend(){
 
 async function removeFromBackend(link: link) {
   const js = await fetch('http://localhost:3001/api/removeLink',{
-    method:"POST",
+    method:"DELETE",
     mode:"cors",
     headers:{
       "Content-Type":"application/json",
     },
-    body: JSON.stringify({name: link.name, url: link.url})
+    body: JSON.stringify({name: link.name})
   });
   return js.json();
 };

@@ -21,7 +21,7 @@ git clone https://github.com/LalleyDev/Dashboard
 cd Dashboard
 ```
 ```
-npm install
+npm install && npm run build
 ```
 To start website:
 ```
